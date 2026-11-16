@@ -38,6 +38,29 @@ Documentación: [Modelo de datos y diccionario](docs/modelo-datos.md) · [Arquit
 > `JWT_SECRET` es obligatorio (mínimo 32 caracteres). Si `ADMIN_PASSWORD` está definido, se crea un usuario
 > ADMIN inicial con `ADMIN_USERNAME` / `ADMIN_EMAIL`.
 
+## Importar los datos
+
+La tabla `resultado_saber11` se crea vacía y se carga una sola vez desde el CSV del ICFES.
+
+> **El CSV no está en el repositorio** (pesa ~16 MB y `data/*.csv` está en `.gitignore`). Antes de importar,
+> copia `saber11_20224_preparado.csv` a la carpeta `data/`. Debe tener encabezado y las 18 columnas de la tabla
+> (todas menos `id`), en cualquier orden, separadas por coma y en UTF-8.
+
+Con PostgreSQL en marcha y el `.env` creado (la tarea lo lee sola):
+
+```bash
+./gradlew importarDatos
+```
+
+* La carga es todo o nada (una transacción). Las filas inválidas se descartan y se listan en el log.
+* Si la tabla ya tiene filas, se niega a cargar. Para borrarlas y volver a cargar:
+  `./gradlew importarDatos -Preemplazar=true`
+* Para verificar: `select count(*) from resultado_saber11;` (con el archivo actual son 106.817 filas).
+* Al terminar la aplicación se cierra sola. No interfiere con la API: usa un puerto libre al azar.
+* Otro archivo: usa el perfil directamente con
+  `./gradlew bootRun --args='--spring.profiles.active=importar --app.importar.archivo=ruta/al/archivo.csv'`
+  (en ese caso sí debes tener las variables del `.env` cargadas en la terminal).
+
 
 ## Variables de entorno
 
