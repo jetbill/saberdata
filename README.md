@@ -44,7 +44,7 @@ Documentación: [Modelo de datos y diccionario](docs/modelo-datos.md) · [Arquit
 | Variable | Por defecto | Descripción |
 |---|---|---|
 | `DB_HOST` / `DB_PORT` / `DB_NAME` | `localhost` / `5432` / `saberdata` | Conexión a PostgreSQL. |
-| `DB_USER` / `DB_PASSWORD` | `saberdata` / `saberdata` | Credenciales (también las usa `compose.yaml`). |
+| `DB_USER` / `DB_PASSWORD` | `saberdata` / `saberdata` | Credenciales (también las usa `docker-compose.yaml`). |
 | `JWT_SECRET` | — (obligatorio) | Secreto HS256, mínimo 32 caracteres. |
 | `JWT_EXPIRATION_MINUTES` | `60` | Duración del token. |
 | `CORS_ALLOWED_ORIGINS` | `http://localhost:5173` | Orígenes permitidos (separados por coma). |
