@@ -46,3 +46,5 @@ app:
     password: ${ADMIN_PASSWORD}
   chat:
     memory-window: ${CHAT_MEMORY_WINDOW:20}
+server:
+  port: ${PORT}

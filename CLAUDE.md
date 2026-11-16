@@ -10,14 +10,14 @@ SaberData Colombia: API REST (Java 21, Spring Boot 4.1, Spring Web MVC, Spring S
 
 ```bash
 docker compose up -d          # PostgreSQL local (usa docker-compose.yaml, credenciales de .env)
-./gradlew bootRun             # arranca la API en :8080 (requiere variables de entorno cargadas, ver abajo)
+./gradlew bootRun             # arranca la API en :8090 (requiere variables de entorno cargadas, ver abajo)
 ./gradlew build               # compila + tests
 ./gradlew test                # todos los tests (requiere Docker: Testcontainers)
 ./gradlew test --tests com.saberdata.security.SeguridadWebMvcTest   # una clase de test
 ./gradlew test --tests '*EstadisticasRepositoryTest.nombreDelMetodo' # un método
 ```
 
-- `application.yaml` **no tiene valores por defecto**: todas las propiedades vienen de variables de entorno (`DB_*`, `JWT_SECRET`, `OLLAMA_*`, `ADMIN_*`, `CORS_ALLOWED_ORIGINS`, `CHAT_MEMORY_WINDOW`, `APPLICATION_NAME`, etc.). Copia `.env.example` a `.env` y cárgalo en el shell antes de `bootRun` (PowerShell: ver `README.md`; bash: `set -a; source .env; set +a`). Los valores por defecto que lista el README están en `.env.example`.
+- `application.yaml` **no tiene valores por defecto**: todas las propiedades vienen de variables de entorno (`PORT`, `DB_*`, `JWT_SECRET`, `OLLAMA_*`, `ADMIN_*`, `CORS_ALLOWED_ORIGINS`, `CHAT_MEMORY_WINDOW`, `APPLICATION_NAME`, etc.). Copia `.env.example` a `.env` y cárgalo en el shell antes de `bootRun` (PowerShell: ver `README.md`; bash: `set -a; source .env; set +a`). Los valores por defecto que lista el README están en `.env.example`.
 - `JWT_SECRET` obligatorio (≥32 caracteres). Si `ADMIN_PASSWORD` no está vacío, `AdminInitializer` crea el usuario ADMIN inicial.
 - El chat necesita Ollama corriendo con un modelo que soporte tools (`ollama pull llama3.2`).
 

@@ -33,7 +33,7 @@ Documentación: [Modelo de datos y diccionario](docs/modelo-datos.md) · [Arquit
    ```bash
    ./gradlew bootRun
    ```
-   La API queda en `http://localhost:8080`. Flyway crea las tablas al arrancar.
+   La API queda en `http://localhost:8090`. Flyway crea las tablas al arrancar.
 
 > `JWT_SECRET` es obligatorio (mínimo 32 caracteres). Si `ADMIN_PASSWORD` está definido, se crea un usuario
 > ADMIN inicial con `ADMIN_USERNAME` / `ADMIN_EMAIL`.
@@ -43,6 +43,7 @@ Documentación: [Modelo de datos y diccionario](docs/modelo-datos.md) · [Arquit
 
 | Variable | Por defecto | Descripción |
 |---|---|---|
+| `PORT` | `8090` | Puerto HTTP de la API. |
 | `DB_HOST` / `DB_PORT` / `DB_NAME` | `localhost` / `5432` / `saberdata` | Conexión a PostgreSQL. |
 | `DB_USER` / `DB_PASSWORD` | `saberdata` / `saberdata` | Credenciales (también las usa `docker-compose.yaml`). |
 | `JWT_SECRET` | — (obligatorio) | Secreto HS256, mínimo 32 caracteres. |
@@ -77,25 +78,25 @@ Los errores siempre tienen el mismo formato JSON: `timestamp`, `status`, `error`
 
 ```bash
 # Registro y login
-curl -X POST http://localhost:8080/api/auth/register -H "Content-Type: application/json" \
+curl -X POST http://localhost:8090/api/auth/register -H "Content-Type: application/json" \
   -d '{"username":"ana","email":"ana@correo.com","password":"clave12345"}'
 
-TOKEN=$(curl -s -X POST http://localhost:8080/api/auth/login -H "Content-Type: application/json" \
+TOKEN=$(curl -s -X POST http://localhost:8090/api/auth/login -H "Content-Type: application/json" \
   -d '{"username":"ana","password":"clave12345"}' | sed -E 's/.*"accessToken":"([^"]+)".*/\1/')
 
 # Estadísticas
-curl -H "Authorization: Bearer $TOKEN" http://localhost:8080/api/estadisticas/resumen
-curl -H "Authorization: Bearer $TOKEN" http://localhost:8080/api/estadisticas/rendimiento-por-estrato
-curl -H "Authorization: Bearer $TOKEN" "http://localhost:8080/api/resultados?estrato=Estrato%201&rendimiento=ALTO&page=0&size=20"
+curl -H "Authorization: Bearer $TOKEN" http://localhost:8090/api/estadisticas/resumen
+curl -H "Authorization: Bearer $TOKEN" http://localhost:8090/api/estadisticas/rendimiento-por-estrato
+curl -H "Authorization: Bearer $TOKEN" "http://localhost:8090/api/resultados?estrato=Estrato%201&rendimiento=ALTO&page=0&size=20"
 
 # Chat
-curl -X POST http://localhost:8080/api/chat/conversaciones -H "Authorization: Bearer $TOKEN" \
+curl -X POST http://localhost:8090/api/chat/conversaciones -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" -d '{"titulo":"Estratos"}'
 # Copia el "id" devuelto y úsalo en lugar de ID:
-curl -X POST http://localhost:8080/api/chat/conversaciones/ID/mensajes -H "Authorization: Bearer $TOKEN" \
+curl -X POST http://localhost:8090/api/chat/conversaciones/ID/mensajes -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" -d '{"contenido":"¿Cómo rinden los estudiantes de estrato 1?"}'
 # Streaming (-N desactiva el búfer de curl)
-curl -N -X POST http://localhost:8080/api/chat/conversaciones/ID/mensajes/stream -H "Authorization: Bearer $TOKEN" \
+curl -N -X POST http://localhost:8090/api/chat/conversaciones/ID/mensajes/stream -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" -d '{"contenido":"Compara las jornadas"}'
 ```
 
