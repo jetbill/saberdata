@@ -76,6 +76,11 @@ Con PostgreSQL en marcha y el `.env` creado (la tarea lo lee sola):
 | `OLLAMA_BASE_URL` | `http://localhost:11434` | URL de Ollama. |
 | `OLLAMA_MODEL` | `llama3.2` | Modelo del chat. |
 | `CHAT_MEMORY_WINDOW` | `20` | Mensajes recientes que se envían al modelo. |
+| `CAPTCHA_ENABLED` | `true` | Exige y verifica el CAPTCHA de Cloudflare Turnstile en login y registro. `false` lo desactiva. |
+| `CAPTCHA_SECRET` | `1x0000000000000000000000000000000AA` | Clave **secreta** de Turnstile. El valor por defecto es la de prueba de Cloudflare (siempre aprueba); en producción usa la tuya. |
+
+El front necesita además la clave pública `VITE_TURNSTILE_SITE_KEY` (ver su README). Con las claves de prueba
+(`1x00000000000000000000AA` pública y la secreta de arriba) todo funciona sin cuenta de Cloudflare.
 
 ## Endpoints
 

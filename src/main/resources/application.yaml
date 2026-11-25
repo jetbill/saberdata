@@ -46,5 +46,9 @@ app:
     password: ${ADMIN_PASSWORD}
   chat:
     memory-window: ${CHAT_MEMORY_WINDOW:20}
+  captcha:
+    enabled: ${CAPTCHA_ENABLED}
+    secret: ${CAPTCHA_SECRET}
+    verify-url: https://challenges.cloudflare.com/turnstile/v0/siteverify
 server:
   port: ${PORT}
