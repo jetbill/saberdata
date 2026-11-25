@@ -15,9 +15,10 @@ docker compose up -d          # PostgreSQL local (usa docker-compose.yaml, crede
 ./gradlew test                # todos los tests (requiere Docker: Testcontainers)
 ./gradlew test --tests com.saberdata.security.SeguridadWebMvcTest   # una clase de test
 ./gradlew test --tests '*EstadisticasRepositoryTest.nombreDelMetodo' # un método
+./gradlew importarDatos       # carga data/saber11_20224_preparado.csv en resultado_saber11 (-Preemplazar=true para vaciar antes)
 ```
 
-- `application.yaml` **no tiene valores por defecto**: todas las propiedades vienen de variables de entorno (`PORT`, `DB_*`, `JWT_SECRET`, `OLLAMA_*`, `ADMIN_*`, `CORS_ALLOWED_ORIGINS`, `CHAT_MEMORY_WINDOW`, `APPLICATION_NAME`, etc.). Copia `.env.example` a `.env` y cárgalo en el shell antes de `bootRun` (PowerShell: ver `README.md`; bash: `set -a; source .env; set +a`). Los valores por defecto que lista el README están en `.env.example`.
+- `application.yaml` **casi no tiene valores por defecto** (la única excepción es `CHAT_MEMORY_WINDOW`, que cae en `20`): las propiedades vienen de variables de entorno (`PORT`, `DB_*`, `JWT_SECRET`, `OLLAMA_*`, `ADMIN_*`, `CORS_ALLOWED_ORIGINS`, `APPLICATION_NAME`, etc.). Los valores viven en `.env`; no se añaden valores por defecto al yaml. Copia `.env.example` a `.env` y cárgalo en el shell antes de `bootRun` (PowerShell: ver `README.md`; bash: `set -a; source .env; set +a`). Los valores por defecto que lista el README están en `.env.example`.
 - `JWT_SECRET` obligatorio (≥32 caracteres). Si `ADMIN_PASSWORD` no está vacío, `AdminInitializer` crea el usuario ADMIN inicial.
 - El chat necesita Ollama corriendo con un modelo que soporte tools (`ollama pull llama3.2`).
 
@@ -27,12 +28,17 @@ Capas MVC bajo `com.saberdata`: `controller` → `service` → `repository` (JPA
 
 - **Esquema**: lo gestiona Flyway (`src/main/resources/db/migration/V1__esquema.sql`); Hibernate solo valida (`ddl-auto: validate`). Cambios de esquema = nueva migración `V<n>__*.sql`, y la entidad debe coincidir o el arranque falla.
 - **Seguridad**: stateless, `oauth2ResourceServer(jwt)` con JWT HS256 propio (`JwtService`); el claim `rol` se mapea a `ROLE_USER`/`ROLE_ADMIN`. Públicos: `/api/auth/register`, `/api/auth/login`, `/actuator/health`; `/api/admin/**` solo ADMIN; el resto requiere token. 401/403 en JSON vía `security/Json*Handler`.
-- **Chatbot (`ai`)**: `ChatService` valida que la conversación sea del usuario y delega en un `ChatClient` configurado en `ChatConfig` con (a) `PostgresChatMemory`, que persiste todo el historial en `mensaje` pero entrega al modelo solo los últimos `app.chat.memory-window` mensajes, y (b) `EstadisticasTools` (métodos `@Tool` con consultas agregadas) para que el LLM no invente cifras. Hay endpoint normal y de streaming SSE (`.../mensajes/stream`); si Ollama no responde se devuelve 503.
+- **Chatbot (`ai`)**: `ChatService` valida que la conversación sea del usuario y delega en un `ChatClient` configurado en `ChatConfig` con (a) `PostgresChatMemory`, que persiste todo el historial en `mensaje` pero entrega al modelo solo los últimos `app.chat.memory-window` mensajes, y (b) `EstadisticasTools` (métodos `@Tool` con consultas agregadas) para que el LLM no invente cifras. Hay endpoint normal y de streaming SSE (`.../mensajes/stream`); si Ollama no responde se devuelve 503. Protocolo del stream (`ChatController`): eventos sin nombre = trozos de texto, `event: fin` = respuesta completa, `event: error` = falló a mitad; un stream sin `fin` ni `error` es una conexión cortada. Los errores previos al primer trozo salen como JSON normal con su código HTTP. Si cambias este protocolo, actualiza `chatApi.ts` del frontend.
+- **Importación (`importacion`)**: `ImportadorSaber11` carga el CSV por lotes con `JdbcTemplate`; se ejecuta con el perfil `importar` (`ImportadorRunner`) mediante la tarea Gradle `importarDatos`, que lee `.env` por su cuenta. Se niega a cargar si la tabla ya tiene filas salvo `-Preemplazar=true`. El CSV (`data/*.csv`) no se versiona.
 - **Estadísticas/resultados**: consultas JPQL agregadas y `Specifications` en `ResultadoSaber11Repository`; la variable objetivo es `Rendimiento` (ALTO/BAJO).
 
 ## Tests
 
-Usan Testcontainers con PostgreSQL (`EstadisticasRepositoryTest`, `SaberdataApplicationTests`) y MockMvc para seguridad (`SeguridadWebMvcTest`); Docker debe estar activo.
+Usan Testcontainers con PostgreSQL (`EstadisticasRepositoryTest`, `SaberdataApplicationTests`, `ImportadorSaber11Test`) y MockMvc para seguridad (`SeguridadWebMvcTest`); Docker debe estar activo. Los tests no leen `.env`: usan `src/test/resources/application.properties` con sus propios valores.
+
+## Frontend
+
+El cliente React vive en un repositorio aparte, `../saberdata-front` (Vite, React, TypeScript, Material UI). Corre en `http://localhost:5173`, el único origen que permite `CORS_ALLOWED_ORIGINS`, y consume esta API en `:8090`. Los DTO están replicados a mano en `saberdata-front/src/api/tipos.ts`: si cambias un DTO, actualiza ese archivo.
 
 ## Git
 
