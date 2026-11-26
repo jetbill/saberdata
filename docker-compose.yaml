@@ -3,9 +3,9 @@ services:
     image: postgres:16
     container_name: saberdata-postgres
     environment:
-      POSTGRES_DB: ${DB_NAME:-saberdata}
-      POSTGRES_USER: ${DB_USER:-saberdata}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-saberdata}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "${DB_PORT:-5432}:5432"
     volumes:

@@ -10,6 +10,7 @@ import com.saberdata.dto.TokenResponse;
 import com.saberdata.model.Rol;
 import com.saberdata.model.Usuario;
 import com.saberdata.service.AuthService;
+import com.saberdata.service.CaptchaService;
 import com.saberdata.service.EstadisticasService;
 import com.saberdata.service.JwtService;
 import org.junit.jupiter.api.Test;
@@ -55,6 +56,10 @@ class SeguridadWebMvcTest {
 
     @MockitoBean
     AuthService authService;
+
+    // Simulado: aquí solo se prueba la seguridad, no la verificación del CAPTCHA.
+    @MockitoBean
+    CaptchaService captchaService;
 
     @MockitoBean
     EstadisticasService estadisticasService;

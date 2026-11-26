@@ -16,5 +16,9 @@ public record RegisterRequest(
 
         // BCrypt solo usa los primeros 72 bytes, por eso el máximo.
         @NotBlank @Size(min = 8, max = 72)
-        String password) {
+        String password,
+
+        // Token de Turnstile: opcional aquí, obligatorio cuando app.captcha.enabled=true.
+        @Size(max = 4096)
+        String captchaToken) {
 }

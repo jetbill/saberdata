@@ -97,20 +97,20 @@ y es independiente de los usuarios y del chat.
 ### Tabla `resultado_saber11`
 
 Datos abiertos del ICFES (Saber 11, periodo 2022-4). Todas las columnas descriptivas son texto ya normalizado
-(ASCII, sin tildes ni comas). La tabla se crea vacía; la carga se hace en una etapa posterior.
+(ASCII, sin tildes ni comas). La tabla se crea vacía; se carga con el perfil `importar` (ver README, sección "Importar los datos").
 
 | Columna | Tipo | Nulo | Descripción |
 |---|---|---|---|
 | id | BIGSERIAL (PK) | No | Identificador interno. |
 | estu_genero | VARCHAR(50) | Sí | Género del estudiante. |
 | estu_depto_reside | VARCHAR(100) | Sí | Departamento donde reside el estudiante. |
-| fami_estratovivienda | VARCHAR(50) | Sí | Estrato de la vivienda (Estrato 1 a 6, Sin Estratificar). |
+| fami_estratovivienda | VARCHAR(50) | Sí | Estrato de la vivienda (Estrato 1 a 6, Sin Estrato). |
 | fami_educacionmadre | VARCHAR(100) | Sí | Nivel educativo de la madre. |
 | fami_educacionpadre | VARCHAR(100) | Sí | Nivel educativo del padre. |
-| fami_tieneinternet | VARCHAR(10) | Sí | El hogar tiene internet (SI/NO). |
-| fami_tienecomputador | VARCHAR(10) | Sí | El hogar tiene computador (SI/NO). |
-| fami_tieneautomovil | VARCHAR(10) | Sí | El hogar tiene automóvil (SI/NO). |
-| fami_tienelavadora | VARCHAR(10) | Sí | El hogar tiene lavadora (SI/NO). |
+| fami_tieneinternet | VARCHAR(10) | Sí | El hogar tiene internet (Si/No). |
+| fami_tienecomputador | VARCHAR(10) | Sí | El hogar tiene computador (Si/No). |
+| fami_tieneautomovil | VARCHAR(10) | Sí | El hogar tiene automóvil (Si/No). |
+| fami_tienelavadora | VARCHAR(10) | Sí | El hogar tiene lavadora (Si/No). |
 | fami_cuartoshogar | VARCHAR(30) | Sí | Número de cuartos del hogar. |
 | fami_personashogar | VARCHAR(30) | Sí | Número de personas del hogar. |
 | cole_naturaleza | VARCHAR(30) | Sí | Naturaleza del colegio (oficial / no oficial). |

@@ -11,6 +11,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.async.AsyncRequestNotUsableException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.List;
@@ -44,6 +45,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     ResponseEntity<ErrorResponse> handleAccessDenied(AccessDeniedException ex, HttpServletRequest req) {
         return build(HttpStatus.FORBIDDEN, "No tienes permisos para acceder a este recurso.", req, List.of());
+    }
+
+    /**
+     * El cliente cerró la conexión (p. ej. cerró la pestaña durante el streaming SSE del chat).
+     * No hay a quién responder: se ignora sin tratarlo como error del servidor.
+     */
+    @ExceptionHandler(AsyncRequestNotUsableException.class)
+    void handleClientDisconnected(AsyncRequestNotUsableException ex, HttpServletRequest req) {
+        log.debug("Cliente desconectado en {}: {}", req.getRequestURI(), ex.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
