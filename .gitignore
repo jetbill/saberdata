@@ -43,3 +43,5 @@ out/
 
 ### Datos (el CSV de Saber 11 pesa ~16 MB; se carga con ./gradlew importarDatos) ###
 data/*.csv
+data/*.model
+data/*.model.tmp

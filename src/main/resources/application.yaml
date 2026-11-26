@@ -50,5 +50,9 @@ app:
     enabled: ${CAPTCHA_ENABLED}
     secret: ${CAPTCHA_SECRET}
     verify-url: https://challenges.cloudflare.com/turnstile/v0/siteverify
+  mineria:
+    modelo-ruta: ${MINERIA_MODELO_RUTA}
+    pliegues: ${MINERIA_PLIEGUES}
+    min-obj: ${MINERIA_MIN_OBJ}
 server:
   port: ${PORT}
